@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const usuarioController = require('../controllers/usuario.controller');
 
+// Cada ruta conecta un método HTTP con la operación correspondiente del controlador.
+
 /**
  * @swagger
  * /api/usuarios:
@@ -14,6 +16,7 @@ const usuarioController = require('../controllers/usuario.controller');
  *       500:
  *         description: Error interno del servidor.
  */
+// Devuelve la lista de usuarios.
 router.get('/', usuarioController.obtenerUsuarios);
 
 /**
@@ -35,6 +38,7 @@ router.get('/', usuarioController.obtenerUsuarios);
  *       404:
  *         description: Usuario no encontrado.
  */
+// Busca y devuelve un usuario por su ID.
 router.get('/:id', usuarioController.obtenerUsuarioPorId);
 
 /**
@@ -55,6 +59,7 @@ router.get('/:id', usuarioController.obtenerUsuarioPorId);
  *       400:
  *         description: Campos requeridos faltantes.
  */
+// Registra un usuario con los datos enviados en el cuerpo JSON.
 router.post('/', usuarioController.crearUsuario);
 
 /**
@@ -81,6 +86,7 @@ router.post('/', usuarioController.crearUsuario);
  *       404:
  *         description: Usuario no encontrado.
  */
+// Actualiza los datos del usuario identificado por el ID.
 router.put('/:id', usuarioController.actualizarUsuario);
 
 /**
@@ -101,6 +107,7 @@ router.put('/:id', usuarioController.actualizarUsuario);
  *       404:
  *         description: Usuario no encontrado.
  */
+// Establece la fecha y hora actuales como último acceso del usuario.
 router.patch('/:id/ultimo-acceso', usuarioController.actualizarUltimoAcceso);
 
 /**
@@ -121,6 +128,8 @@ router.patch('/:id/ultimo-acceso', usuarioController.actualizarUltimoAcceso);
  *       404:
  *         description: Usuario no encontrado.
  */
+// Elimina el usuario identificado por el ID.
 router.delete('/:id', usuarioController.eliminarUsuario);
 
+// Exporta el enrutador para montarlo en la aplicación Express.
 module.exports = router;

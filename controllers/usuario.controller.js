@@ -1,7 +1,7 @@
 const Usuario = require('../models/usuario.model');
 const bcrypt = require('bcryptjs');
 
-// Obtener todos los usuarios
+// Lista los usuarios y excluye las contraseñas de la respuesta.
 exports.obtenerUsuarios = async (req, res) => {
   try {
     const usuarios = await Usuario.findAll({
@@ -14,7 +14,7 @@ exports.obtenerUsuarios = async (req, res) => {
   }
 };
 
-// Obtener un usuario por ID
+// Busca un usuario por su clave primaria sin exponer su contraseña.
 exports.obtenerUsuarioPorId = async (req, res) => {
   const { id } = req.params;
   try {
@@ -33,7 +33,8 @@ exports.obtenerUsuarioPorId = async (req, res) => {
   }
 };
 
-// Crear usuario
+// Valida los campos obligatorios, almacena la contraseña hasheada y devuelve
+// los datos públicos del nuevo usuario.
 exports.crearUsuario = async (req, res) => {
   const { nombres, fecha_nacimiento, contrasena, es_administrador } = req.body;
 
@@ -42,6 +43,7 @@ exports.crearUsuario = async (req, res) => {
   }
 
   try {
+    // Genera un salt para proteger la contraseña antes de guardarla.
     const salt = await bcrypt.genSalt(10);
     const contrasenaHashed = await bcrypt.hash(contrasena, salt);
 
@@ -68,7 +70,7 @@ exports.crearUsuario = async (req, res) => {
   }
 };
 
-// Actualizar usuario (PUT)
+// Actualiza los campos enviados y conserva los valores omitidos.
 exports.actualizarUsuario = async (req, res) => {
   const { id } = req.params;
   const { nombres, fecha_nacimiento, contrasena, es_administrador, fecha_ultimo_acceso } = req.body;
@@ -79,6 +81,7 @@ exports.actualizarUsuario = async (req, res) => {
       return res.status(404).json({ message: 'Usuario no encontrado.' });
     }
 
+    // Mantiene el hash existente salvo que se proporcione otra contraseña.
     let nuevaContrasena = usuario.contrasena;
     if (contrasena) {
       const salt = await bcrypt.genSalt(10);
@@ -103,7 +106,7 @@ exports.actualizarUsuario = async (req, res) => {
   }
 };
 
-// Actualizar fecha de último acceso (PATCH)
+// Registra la fecha y hora actuales como último acceso del usuario.
 exports.actualizarUltimoAcceso = async (req, res) => {
   const { id } = req.params;
   const fechaActual = new Date();
@@ -127,7 +130,7 @@ exports.actualizarUltimoAcceso = async (req, res) => {
   }
 };
 
-// Eliminar usuario
+// Busca y elimina el usuario indicado por su ID.
 exports.eliminarUsuario = async (req, res) => {
   const { id } = req.params;
 

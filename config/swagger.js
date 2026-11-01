@@ -1,5 +1,6 @@
 const swaggerJSDoc = require('swagger-jsdoc');
 
+// Define la información general de OpenAPI y los esquemas reutilizables.
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -16,6 +17,7 @@ const options = {
     ],
     components: {
       schemas: {
+        // Representación de un usuario devuelto por la API.
         Usuario: {
           type: 'object',
           properties: {
@@ -27,6 +29,7 @@ const options = {
             created_at: { type: 'string', format: 'date-time', example: '2026-10-29T08:00:00.000Z' }
           }
         },
+        // Estructura esperada al crear un usuario.
         UsuarioInput: {
           type: 'object',
           required: ['nombres', 'fecha_nacimiento', 'contrasena'],
@@ -40,9 +43,12 @@ const options = {
       }
     }
   },
+  // Lee las anotaciones OpenAPI declaradas junto a las rutas de Express.
   apis: ['./routes/*.js']
 };
 
+// Construye la especificación OpenAPI que consumirá Swagger UI.
 const swaggerSpec = swaggerJSDoc(options);
 
+// Permite reutilizar la especificación desde otros módulos de la aplicación.
 module.exports = swaggerSpec;

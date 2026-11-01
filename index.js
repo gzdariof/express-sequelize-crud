@@ -6,15 +6,17 @@ require('dotenv').config();
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsdoc = require('swagger-jsdoc');
 
+// Crea la aplicación Express y obtiene el puerto desde el entorno.
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Interpreta automáticamente los cuerpos de las solicitudes en formato JSON.
 app.use(express.json());
 
-// Enrutar la entidad usuarios
+// Agrupa las operaciones de usuarios bajo la ruta base /api/usuarios.
 app.use('/api/usuarios', usuarioRoutes);
 
-// Configuración de OpenAPI / Swagger
+// Define los metadatos de OpenAPI y dónde buscar las anotaciones Swagger.
 const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
@@ -30,23 +32,26 @@ const swaggerOptions = {
       },
     ],
   },
-  // Ruta a los archivos que contienen las anotaciones de documentación
+  // Las anotaciones de las rutas describen los endpoints de la API.
   apis: ['./routes/*.js', './app.js'], 
 };
 
+// Genera la especificación OpenAPI a partir de las opciones y anotaciones.
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-// Servir la interfaz gráfica de Swagger
+// Publica Swagger UI para consultar y probar la API desde el navegador.
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Sincronizar base de datos e iniciar servidor
+// Inicia el servidor solo después de sincronizar los modelos con la base de datos.
 sequelize.sync()
   .then(() => {
     console.log('✅ Base de datos sincronizada con Sequelize');
+    // Escucha solicitudes HTTP en el puerto configurado.
     app.listen(PORT, () => {
       console.log(`🚀 Servidor Web API corriendo en http://localhost:${PORT}`);
     });
   })
   .catch((error) => {
+    // Informa el fallo de conexión o sincronización; el servidor no se inicia.
     console.error('❌ Error al conectar con la base de datos:', error);
   });
